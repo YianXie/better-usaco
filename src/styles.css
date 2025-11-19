@@ -1,0 +1,237 @@
+/* USACO Dark Mode Styles */
+
+/* Dark mode base styles */
+.usaco-dark-mode {
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+}
+
+.usaco-dark-mode body {
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+}
+
+/* Headers */
+.usaco-dark-mode h1,
+.usaco-dark-mode h2,
+.usaco-dark-mode h3,
+.usaco-dark-mode h4,
+.usaco-dark-mode h5,
+.usaco-dark-mode h6 {
+    color: #ffffff !important;
+}
+
+/* Links */
+.usaco-dark-mode a {
+    color: #64b5f6 !important;
+}
+
+.usaco-dark-mode a:hover {
+    color: #90caf9 !important;
+}
+
+.usaco-dark-mode a:visited {
+    color: #ba68c8 !important;
+}
+
+/* Text elements */
+.usaco-dark-mode p,
+.usaco-dark-mode span,
+.usaco-dark-mode div,
+.usaco-dark-mode li,
+.usaco-dark-mode td,
+.usaco-dark-mode th {
+    color: #e0e0e0 !important;
+}
+
+/* Backgrounds */
+.usaco-dark-mode .container,
+.usaco-dark-mode .content,
+.usaco-dark-mode .main,
+.usaco-dark-mode .wrapper,
+.usaco-dark-mode .page,
+.usaco-dark-mode .section {
+    background-color: #1a1a1a !important;
+}
+
+/* Cards and boxes */
+.usaco-dark-mode .card,
+.usaco-dark-mode .box,
+.usaco-dark-mode .panel,
+.usaco-dark-mode .widget {
+    background-color: #2d2d2d !important;
+    border-color: #404040 !important;
+    color: #e0e0e0 !important;
+}
+
+/* Tables */
+.usaco-dark-mode table {
+    background-color: #1a1a1a !important;
+}
+
+.usaco-dark-mode thead {
+    background-color: #2d2d2d !important;
+}
+
+.usaco-dark-mode th {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border-color: #404040 !important;
+}
+
+.usaco-dark-mode td {
+    border-color: #404040 !important;
+}
+
+.usaco-dark-mode tr:nth-child(even) {
+    background-color: #252525 !important;
+}
+
+.usaco-dark-mode tr:hover {
+    background-color: #333333 !important;
+}
+
+/* Forms */
+.usaco-dark-mode input[type="text"],
+.usaco-dark-mode input[type="email"],
+.usaco-dark-mode input[type="password"],
+.usaco-dark-mode input[type="number"],
+.usaco-dark-mode input[type="search"],
+.usaco-dark-mode textarea,
+.usaco-dark-mode select {
+    background-color: #2d2d2d !important;
+    color: #e0e0e0 !important;
+    border-color: #404040 !important;
+}
+
+.usaco-dark-mode input::placeholder,
+.usaco-dark-mode textarea::placeholder {
+    color: #999999 !important;
+}
+
+.usaco-dark-mode input:focus,
+.usaco-dark-mode textarea:focus,
+.usaco-dark-mode select:focus {
+    border-color: #64b5f6 !important;
+    outline-color: #64b5f6 !important;
+}
+
+/* Buttons */
+.usaco-dark-mode button,
+.usaco-dark-mode .button,
+.usaco-dark-mode .btn,
+.usaco-dark-mode input[type="button"],
+.usaco-dark-mode input[type="submit"] {
+    background-color: #3d5afe !important;
+    color: #ffffff !important;
+    border-color: #3d5afe !important;
+}
+
+.usaco-dark-mode button:hover,
+.usaco-dark-mode .button:hover,
+.usaco-dark-mode .btn:hover,
+.usaco-dark-mode input[type="button"]:hover,
+.usaco-dark-mode input[type="submit"]:hover {
+    background-color: #304ffe !important;
+}
+
+/* Code blocks */
+.usaco-dark-mode code,
+.usaco-dark-mode pre {
+    background-color: #2d2d2d !important;
+    color: #e0e0e0 !important;
+    border-color: #404040 !important;
+}
+
+.usaco-dark-mode pre {
+    background-color: #1e1e1e !important;
+}
+
+/* Navigation */
+.usaco-dark-mode nav,
+.usaco-dark-mode .navbar,
+.usaco-dark-mode .navigation {
+    background-color: #2d2d2d !important;
+    border-color: #404040 !important;
+}
+
+.usaco-dark-mode .nav-link,
+.usaco-dark-mode .nav-item {
+    color: #e0e0e0 !important;
+}
+
+.usaco-dark-mode .nav-link:hover,
+.usaco-dark-mode .nav-item:hover {
+    color: #64b5f6 !important;
+}
+
+/* Sidebars */
+.usaco-dark-mode .sidebar,
+.usaco-dark-mode .aside {
+    background-color: #252525 !important;
+    border-color: #404040 !important;
+}
+
+/* Footer */
+.usaco-dark-mode footer {
+    background-color: #1a1a1a !important;
+    color: #999999 !important;
+    border-top-color: #404040 !important;
+}
+
+/* Borders */
+.usaco-dark-mode * {
+    border-color: #404040 !important;
+}
+
+/* Scrollbar */
+.usaco-dark-mode ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+.usaco-dark-mode ::-webkit-scrollbar-track {
+    background: #1a1a1a !important;
+}
+
+.usaco-dark-mode ::-webkit-scrollbar-thumb {
+    background: #404040 !important;
+    border-radius: 6px;
+}
+
+.usaco-dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: #555555 !important;
+}
+
+/* Images - preserve original colors but add slight darkening */
+.usaco-dark-mode img {
+    opacity: 0.9;
+}
+
+/* Specific USACO elements (common class names) */
+.usaco-dark-mode .problem,
+.usaco-dark-mode .contest,
+.usaco-dark-mode .solution {
+    background-color: #2d2d2d !important;
+    color: #e0e0e0 !important;
+}
+
+.usaco-dark-mode .header,
+.usaco-dark-mode .top-bar {
+    background-color: #252525 !important;
+    border-bottom-color: #404040 !important;
+}
+
+/* Override any white backgrounds */
+.usaco-dark-mode [style*="background-color: white"],
+.usaco-dark-mode [style*="background-color: #fff"],
+.usaco-dark-mode [style*="background-color: #ffffff"] {
+    background-color: #1a1a1a !important;
+}
+
+/* Override any white text on dark backgrounds */
+.usaco-dark-mode [style*="color: white"],
+.usaco-dark-mode [style*="color: #fff"],
+.usaco-dark-mode [style*="color: #ffffff"] {
+    color: #e0e0e0 !important;
+}
