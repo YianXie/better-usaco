@@ -1,6 +1,8 @@
 // USACO Dark Mode Content Script
 // Handles dark mode, filters, and toggle button
 
+const IMAGE_SRC_PREFIX = "https://usaco.org/current/images/";
+
 let settings = {
     enabled: true,
     darkMode: false,
@@ -78,6 +80,25 @@ function applyStyles() {
     } else {
         document.documentElement.classList.remove("usaco-dark-mode");
     }
+
+    document.querySelectorAll("a>img").forEach((img) => {
+        console.log(img.src);
+        switch (img.src) {
+            case `${IMAGE_SRC_PREFIX}usaco_logo.png`:
+                img.src =
+                    "https://res.cloudinary.com/do3fxs95y/image/upload/v1763638736/image-removebg-preview_hwrwpt.png";
+                break;
+            case `${IMAGE_SRC_PREFIX}sponsors/logo_vplanet.jpg`:
+                img.src =
+                    "https://res.cloudinary.com/do3fxs95y/image/upload/v1763639040/logo_vplanet-no-background_vtzqrx.png";
+                break;
+            default:
+                break;
+        }
+    });
+
+    // document.querySelector("a>img").src =
+    //     "https://res.cloudinary.com/do3fxs95y/image/upload/v1763638736/image-removebg-preview_hwrwpt.png";
 }
 
 // Remove all styles

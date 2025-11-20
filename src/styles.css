@@ -44,6 +44,14 @@
     color: #e0e0e0 !important;
 }
 
+.usaco-dark-mode .trial-result.trial-status-yes {
+    background-color: #006400 !important;
+}
+
+.usaco-dark-mode .trial-result.trial-status-no {
+    background-color: #8b0000 !important;
+}
+
 /* Backgrounds */
 .usaco-dark-mode .container,
 .usaco-dark-mode .content,
@@ -52,6 +60,18 @@
 .usaco-dark-mode .page,
 .usaco-dark-mode .section {
     background-color: #1a1a1a !important;
+}
+
+.usaco-dark-mode div.panel {
+    background-color: transparent !important;
+}
+
+.usaco-dark-mode .problem-text {
+    background-color: #2d2d2d !important;
+}
+
+.usaco-dark-mode #last-status {
+    background-color: #2d2d2d !important;
 }
 
 /* Cards and boxes */
