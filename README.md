@@ -25,6 +25,7 @@ A Chrome extension that enables dark mode and customizable visual filters for th
 ### Extension Icons
 
 The extension requires icons in the `icons/` directory:
+
 - `icon16.png` (16x16 pixels)
 - `icon48.png` (48x48 pixels)
 - `icon128.png` (128x128 pixels)
@@ -107,6 +108,7 @@ This extension requires the following permissions:
 ### Testing
 
 Test the extension on various USACO pages:
+
 - Homepage
 - Problem pages
 - Contest pages
@@ -115,15 +117,18 @@ Test the extension on various USACO pages:
 ## Troubleshooting
 
 **Extension not working?**
+
 - Make sure you're on a USACO website (usaco.org)
 - Check that the extension is enabled in `chrome://extensions/`
 - Try reloading the page
 
 **Settings not saving?**
+
 - Ensure Chrome sync is enabled (for sync storage)
 - Check browser console for errors
 
 **Toggle button not appearing?**
+
 - Make sure the extension is enabled
 - Try refreshing the page
 - Check that you're on a USACO website
@@ -131,6 +136,7 @@ Test the extension on various USACO pages:
 ## Contributing
 
 Contributions are welcome! Feel free to:
+
 - Report bugs
 - Suggest features
 - Submit pull requests
@@ -146,8 +152,7 @@ Inspired by [DocsAfterDark](https://github.com/waymondrang/docsafterdark), a sim
 ## Version History
 
 - **1.0.0** - Initial release
-  - Dark mode support
-  - Contrast, grayscale, and invert filters
-  - Quick toggle button
-  - Settings persistence
-
+    - Dark mode support
+    - Contrast, grayscale, and invert filters
+    - Quick toggle button
+    - Settings persistence
