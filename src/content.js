@@ -82,7 +82,6 @@ function applyStyles() {
     }
 
     document.querySelectorAll("a>img").forEach((img) => {
-        console.log(img.src);
         switch (img.src) {
             case `${IMAGE_SRC_PREFIX}usaco_logo.png`:
                 img.src =

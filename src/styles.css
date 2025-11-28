@@ -1,14 +1,26 @@
 /* USACO Dark Mode Styles */
+:root {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #404040;
+    --text-primary: #e0e0e0;
+    --text-secondary: #999999;
+    --text-tertiary: #666666;
+
+    --link-color: #64b5f6;
+    --link-color-hover: #304ffe;
+    --link-color-visited: #ba68c8;
+}
 
 /* Dark mode base styles */
 .usaco-dark-mode {
-    background-color: #1a1a1a !important;
-    color: #e0e0e0 !important;
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
 }
 
 .usaco-dark-mode body {
-    background-color: #1a1a1a !important;
-    color: #e0e0e0 !important;
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
 }
 
 /* Headers */
@@ -18,20 +30,20 @@
 .usaco-dark-mode h4,
 .usaco-dark-mode h5,
 .usaco-dark-mode h6 {
-    color: #ffffff !important;
+    color: var(--text-primary) !important;
 }
 
 /* Links */
 .usaco-dark-mode a {
-    color: #64b5f6 !important;
+    color: var(--link-color) !important;
 }
 
 .usaco-dark-mode a:hover {
-    color: #90caf9 !important;
+    color: var(--link-color-hover) !important;
 }
 
 .usaco-dark-mode a:visited {
-    color: #ba68c8 !important;
+    color: var(--link-color-visited) !important;
 }
 
 /* Text elements */
@@ -41,7 +53,7 @@
 .usaco-dark-mode li,
 .usaco-dark-mode td,
 .usaco-dark-mode th {
-    color: #e0e0e0 !important;
+    color: var(--text-primary) !important;
 }
 
 .usaco-dark-mode .trial-result.trial-status-yes {
@@ -54,12 +66,19 @@
 
 /* Backgrounds */
 .usaco-dark-mode .container,
-.usaco-dark-mode .content,
 .usaco-dark-mode .main,
 .usaco-dark-mode .wrapper,
 .usaco-dark-mode .page,
 .usaco-dark-mode .section {
-    background-color: #1a1a1a !important;
+    background-color: var(--bg-primary) !important;
+}
+
+.usaco-dark-mode .content {
+    background-color: var(--bg-secondary) !important;
+}
+
+.usaco-dark-mode .shadow1 {
+    box-shadow: none !important;
 }
 
 .usaco-dark-mode div.panel {
@@ -67,11 +86,11 @@
 }
 
 .usaco-dark-mode .problem-text {
-    background-color: #2d2d2d !important;
+    background-color: var(--bg-secondary) !important;
 }
 
 .usaco-dark-mode #last-status {
-    background-color: #2d2d2d !important;
+    background-color: var(--bg-secondary) !important;
 }
 
 /* Cards and boxes */
@@ -79,36 +98,36 @@
 .usaco-dark-mode .box,
 .usaco-dark-mode .panel,
 .usaco-dark-mode .widget {
-    background-color: #2d2d2d !important;
-    border-color: #404040 !important;
-    color: #e0e0e0 !important;
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
 }
 
 /* Tables */
 .usaco-dark-mode table {
-    background-color: #1a1a1a !important;
+    background-color: var(--bg-primary) !important;
 }
 
 .usaco-dark-mode thead {
-    background-color: #2d2d2d !important;
+    background-color: var(--bg-secondary) !important;
 }
 
 .usaco-dark-mode th {
-    background-color: #2d2d2d !important;
-    color: #ffffff !important;
-    border-color: #404040 !important;
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--bg-tertiary) !important;
 }
 
 .usaco-dark-mode td {
-    border-color: #404040 !important;
+    border-color: var(--bg-tertiary) !important;
 }
 
 .usaco-dark-mode tr:nth-child(even) {
-    background-color: #252525 !important;
+    background-color: var(--bg-tertiary) !important;
 }
 
 .usaco-dark-mode tr:hover {
-    background-color: #333333 !important;
+    background-color: var(--bg-tertiary) !important;
 }
 
 /* Forms */
@@ -119,21 +138,21 @@
 .usaco-dark-mode input[type="search"],
 .usaco-dark-mode textarea,
 .usaco-dark-mode select {
-    background-color: #2d2d2d !important;
-    color: #e0e0e0 !important;
-    border-color: #404040 !important;
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--bg-tertiary) !important;
 }
 
 .usaco-dark-mode input::placeholder,
 .usaco-dark-mode textarea::placeholder {
-    color: #999999 !important;
+    color: var(--text-secondary) !important;
 }
 
 .usaco-dark-mode input:focus,
 .usaco-dark-mode textarea:focus,
 .usaco-dark-mode select:focus {
-    border-color: #64b5f6 !important;
-    outline-color: #64b5f6 !important;
+    border-color: var(--link-color) !important;
+    outline-color: var(--link-color) !important;
 }
 
 /* Buttons */
@@ -142,9 +161,9 @@
 .usaco-dark-mode .btn,
 .usaco-dark-mode input[type="button"],
 .usaco-dark-mode input[type="submit"] {
-    background-color: #3d5afe !important;
-    color: #ffffff !important;
-    border-color: #3d5afe !important;
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--bg-tertiary) !important;
 }
 
 .usaco-dark-mode button:hover,
@@ -152,56 +171,57 @@
 .usaco-dark-mode .btn:hover,
 .usaco-dark-mode input[type="button"]:hover,
 .usaco-dark-mode input[type="submit"]:hover {
-    background-color: #304ffe !important;
+    background-color: var(--bg-tertiary) !important;
 }
 
 /* Code blocks */
 .usaco-dark-mode code,
 .usaco-dark-mode pre {
-    background-color: #2d2d2d !important;
-    color: #e0e0e0 !important;
-    border-color: #404040 !important;
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--bg-tertiary) !important;
+    padding: 2px !important;
 }
 
 .usaco-dark-mode pre {
-    background-color: #1e1e1e !important;
+    background-color: var(--bg-tertiary) !important;
 }
 
 /* Navigation */
 .usaco-dark-mode nav,
 .usaco-dark-mode .navbar,
 .usaco-dark-mode .navigation {
-    background-color: #2d2d2d !important;
-    border-color: #404040 !important;
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--bg-tertiary) !important;
 }
 
 .usaco-dark-mode .nav-link,
 .usaco-dark-mode .nav-item {
-    color: #e0e0e0 !important;
+    color: var(--text-primary) !important;
 }
 
 .usaco-dark-mode .nav-link:hover,
 .usaco-dark-mode .nav-item:hover {
-    color: #64b5f6 !important;
+    color: var(--link-color) !important;
 }
 
 /* Sidebars */
 .usaco-dark-mode .sidebar,
 .usaco-dark-mode .aside {
-    background-color: #252525 !important;
-    border-color: #404040 !important;
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--bg-tertiary) !important;
 }
 
 /* Footer */
 .usaco-dark-mode footer {
-    background-color: #1a1a1a !important;
-    color: #999999 !important;
-    border-top-color: #404040 !important;
+    background-color: var(--bg-primary) !important;
+    color: var(--text-secondary) !important;
+    border-top-color: var(--bg-tertiary) !important;
 }
 
 /* Borders */
 .usaco-dark-mode * {
-    border-color: #404040 !important;
+    border-color: var(--bg-tertiary) !important;
 }
 
 /* Scrollbar */
@@ -211,16 +231,16 @@
 }
 
 .usaco-dark-mode ::-webkit-scrollbar-track {
-    background: #1a1a1a !important;
+    background: var(--bg-primary) !important;
 }
 
 .usaco-dark-mode ::-webkit-scrollbar-thumb {
-    background: #404040 !important;
+    background: var(--bg-tertiary) !important;
     border-radius: 6px;
 }
 
 .usaco-dark-mode ::-webkit-scrollbar-thumb:hover {
-    background: #555555 !important;
+    background: var(--bg-tertiary) !important;
 }
 
 /* Images - preserve original colors but add slight darkening */
@@ -232,26 +252,26 @@
 .usaco-dark-mode .problem,
 .usaco-dark-mode .contest,
 .usaco-dark-mode .solution {
-    background-color: #2d2d2d !important;
-    color: #e0e0e0 !important;
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
 }
 
 .usaco-dark-mode .header,
 .usaco-dark-mode .top-bar {
-    background-color: #252525 !important;
-    border-bottom-color: #404040 !important;
+    background-color: var(--bg-tertiary) !important;
+    border-bottom-color: var(--bg-tertiary) !important;
 }
 
 /* Override any white backgrounds */
 .usaco-dark-mode [style*="background-color: white"],
 .usaco-dark-mode [style*="background-color: #fff"],
 .usaco-dark-mode [style*="background-color: #ffffff"] {
-    background-color: #1a1a1a !important;
+    background-color: var(--bg-primary) !important;
 }
 
 /* Override any white text on dark backgrounds */
 .usaco-dark-mode [style*="color: white"],
 .usaco-dark-mode [style*="color: #fff"],
 .usaco-dark-mode [style*="color: #ffffff"] {
-    color: #e0e0e0 !important;
+    color: var(--text-primary) !important;
 }
