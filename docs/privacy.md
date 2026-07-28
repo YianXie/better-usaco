@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Last Updated: Nov 20th, 2025**
+**Last Updated: Jul 27th, 2026**
 
 ## Overview
 
@@ -41,6 +41,8 @@ This processing happens **entirely on your device** and inside your browser.
 
 The Extension may read page elements (such as images or text colors) **only to apply the visual theme**, and this information is **never transmitted** outside your browser.
 
+All images the Extension substitutes into the page (for example, transparent-background versions of the USACO logo) are **bundled inside the Extension itself**. Displaying them makes no network request to any third-party host.
+
 ## Use of Chrome Permissions
 
 1. `storage` (Chrome Storage)
@@ -58,11 +60,7 @@ Are not sent to any external server
 
 Needed so the Extension can inject style rules onto USACO pages.
 The Extension does not read or modify any other sites.
-
-3. activeTab Permission
-
-Used only when you open the extension popup to apply your chosen settings to the active USACO tab.
-The Extension does not access other tabs or read page content beyond what is needed to apply styles.
+This is the only host permission the Extension requests, and it is also what allows the popup to send your chosen settings to an open USACO tab. The Extension does not read the contents or addresses of tabs on any other site.
 
 ## Data Sharing and Transmission
 

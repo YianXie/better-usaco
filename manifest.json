@@ -1,9 +1,9 @@
 {
     "manifest_version": 3,
     "name": "Better USACO",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Enable dark mode and customize appearance on the USACO website with adjustable contrast, grayscale, and invert filters.",
-    "permissions": ["storage", "activeTab"],
+    "permissions": ["storage"],
     "host_permissions": ["https://usaco.org/*"],
     "action": {
         "default_popup": "src/popup.html",
@@ -19,6 +19,12 @@
             "js": ["src/content.js"],
             "css": ["src/styles.css"],
             "run_at": "document_start"
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["src/assets/images/*.png"],
+            "matches": ["https://usaco.org/*"]
         }
     ],
     "icons": {

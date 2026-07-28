@@ -3,6 +3,15 @@
 
 const IMAGE_SRC_PREFIX = "https://usaco.org/current/images/";
 
+// Transparent-background replacements for USACO's logo images. The files are
+// bundled with the extension (see web_accessible_resources in manifest.json) so
+// that rendering a themed page never makes a request to a third-party host.
+const LOGO_REPLACEMENTS = {
+    [`${IMAGE_SRC_PREFIX}usaco_logo.png`]: "src/assets/images/usaco-logo.png",
+    [`${IMAGE_SRC_PREFIX}sponsors/logo_vplanet.jpg`]:
+        "src/assets/images/logo-vplanet.png",
+};
+
 let settings = {
     enabled: true,
     darkMode: false,
@@ -11,7 +20,6 @@ let settings = {
     invert: 0,
 };
 
-let styleElement = null;
 let toggleButton = null;
 
 // Initialize on page load
@@ -46,13 +54,6 @@ function applyStyles() {
         return;
     }
 
-    // Create or update style element
-    if (!styleElement) {
-        styleElement = document.createElement("style");
-        styleElement.id = "usaco-dark-mode-styles";
-        document.head.appendChild(styleElement);
-    }
-
     // Build filter string
     const filters = [];
     if (settings.contrast !== 100) {
@@ -82,32 +83,17 @@ function applyStyles() {
     }
 
     document.querySelectorAll("a>img").forEach((img) => {
-        switch (img.src) {
-            case `${IMAGE_SRC_PREFIX}usaco_logo.png`:
-                img.src =
-                    "https://res.cloudinary.com/do3fxs95y/image/upload/v1763638736/image-removebg-preview_hwrwpt.png";
-                break;
-            case `${IMAGE_SRC_PREFIX}sponsors/logo_vplanet.jpg`:
-                img.src =
-                    "https://res.cloudinary.com/do3fxs95y/image/upload/v1763639040/logo_vplanet-no-background_vtzqrx.png";
-                break;
-            default:
-                break;
+        const replacement = LOGO_REPLACEMENTS[img.src];
+        if (replacement) {
+            img.src = chrome.runtime.getURL(replacement);
         }
     });
-
-    // document.querySelector("a>img").src =
-    //     "https://res.cloudinary.com/do3fxs95y/image/upload/v1763638736/image-removebg-preview_hwrwpt.png";
 }
 
 // Remove all styles
 function removeStyles() {
     document.documentElement.style.filter = "";
     document.documentElement.classList.remove("usaco-dark-mode");
-    if (styleElement) {
-        styleElement.remove();
-        styleElement = null;
-    }
 }
 
 // Create floating toggle button
@@ -120,7 +106,7 @@ function createToggleButton() {
     toggleButton = document.createElement("button");
     toggleButton.id = "usaco-dark-toggle";
     toggleButton.setAttribute("aria-label", "Toggle dark mode");
-    toggleButton.innerHTML = settings.darkMode ? "☀️" : "🌙";
+    toggleButton.textContent = settings.darkMode ? "☀️" : "🌙";
     toggleButton.style.cssText = `
     position: fixed;
     bottom: 20px;
@@ -162,7 +148,7 @@ function createToggleButton() {
 // Update toggle button appearance
 function updateToggleButton() {
     if (toggleButton) {
-        toggleButton.innerHTML = settings.darkMode ? "☀️" : "🌙";
+        toggleButton.textContent = settings.darkMode ? "☀️" : "🌙";
         toggleButton.style.display = settings.enabled ? "block" : "none";
     }
 }

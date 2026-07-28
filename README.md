@@ -82,8 +82,7 @@ better-usaco/
 This extension requires the following permissions:
 
 - `storage`: To save your preferences
-- `activeTab`: To access and modify the USACO website
-- `https://usaco.org/*`: To run on USACO pages
+- `https://usaco.org/*`: To run on and restyle USACO pages
 
 ## Browser Compatibility
 
