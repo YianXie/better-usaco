@@ -41,6 +41,8 @@ This processing happens **entirely on your device** and inside your browser.
 
 The Extension may read page elements (such as images or text colors) **only to apply the visual theme**, and this information is **never transmitted** outside your browser.
 
+On problem pages the Extension adds a “Copy” button beside each sample input/output block. When **you** click it, the sample text already visible on the page is written to your clipboard. Nothing is read from your clipboard, and no clipboard content is stored or transmitted. This requires no additional Chrome permission.
+
 All images the Extension substitutes into the page (for example, transparent-background versions of the USACO logo) are **bundled inside the Extension itself**. Displaying them makes no network request to any third-party host.
 
 ## Use of Chrome Permissions

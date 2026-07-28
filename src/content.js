@@ -15,6 +15,7 @@ const LOGO_REPLACEMENTS = {
 let settings = {
     enabled: true,
     darkMode: false,
+    enhancedSamples: true,
     contrast: 100,
     grayscale: 0,
     invert: 0,
@@ -32,10 +33,21 @@ function init() {
 // Load settings from chrome.storage
 function loadSettings() {
     chrome.storage.sync.get(
-        ["enabled", "darkMode", "contrast", "grayscale", "invert"],
+        [
+            "enabled",
+            "darkMode",
+            "enhancedSamples",
+            "contrast",
+            "grayscale",
+            "invert",
+        ],
         (data) => {
             settings.enabled = data.enabled !== undefined ? data.enabled : true;
             settings.darkMode = data.darkMode || false;
+            settings.enhancedSamples =
+                data.enhancedSamples !== undefined
+                    ? data.enhancedSamples
+                    : true;
             settings.contrast =
                 data.contrast !== undefined ? data.contrast : 100;
             settings.grayscale =
@@ -88,12 +100,188 @@ function applyStyles() {
             img.src = chrome.runtime.getURL(replacement);
         }
     });
+
+    if (settings.enhancedSamples) {
+        enhanceSamples();
+    } else {
+        removeSampleEnhancements();
+    }
 }
 
 // Remove all styles
 function removeStyles() {
     document.documentElement.style.filter = "";
     document.documentElement.classList.remove("usaco-dark-mode");
+    removeSampleEnhancements();
+}
+
+// --- Sample input/output boxes -------------------------------------------
+// USACO renders samples as flat siblings: <h4>SAMPLE INPUT:</h4><pre class="in">
+// followed by <h4>SAMPLE OUTPUT:</h4><pre class="out">. enhanceSamples() moves
+// each such pair into a bordered container with a header row and a copy button;
+// removeSampleEnhancements() puts the original nodes back exactly as they were.
+
+const SAMPLE_CLASS = "busaco-sample";
+const SAMPLE_SECTION_CLASS = "busaco-sample-section";
+const SAMPLE_TITLE_CLASS = "busaco-sample-title";
+
+// Collect every <h4> + <pre> sample pair, in document order
+function collectSampleBlocks() {
+    const blocks = [];
+    document.querySelectorAll("pre.in, pre.out").forEach((pre) => {
+        const heading = pre.previousElementSibling;
+        if (!heading || heading.tagName !== "H4") {
+            return;
+        }
+        if (!/sample\s+(input|output)/i.test(heading.textContent)) {
+            return;
+        }
+        blocks.push({
+            heading,
+            pre,
+            kind: pre.classList.contains("in") ? "in" : "out",
+        });
+    });
+    return blocks;
+}
+
+// Group an input block with the output block that immediately follows it, so
+// the two share a single bordered container
+function groupSampleBlocks(blocks) {
+    const groups = [];
+    blocks.forEach((block) => {
+        const previous = groups[groups.length - 1];
+        const followsInput =
+            block.kind === "out" &&
+            previous &&
+            previous.length === 1 &&
+            previous[0].kind === "in" &&
+            previous[0].pre.nextElementSibling === block.heading;
+
+        if (followsInput) {
+            previous.push(block);
+        } else {
+            groups.push([block]);
+        }
+    });
+    return groups;
+}
+
+function enhanceSamples() {
+    groupSampleBlocks(collectSampleBlocks()).forEach((group) => {
+        // Already wrapped (applyStyles re-runs on navigation)
+        if (group[0].heading.closest(`.${SAMPLE_CLASS}`)) {
+            return;
+        }
+
+        const container = document.createElement("div");
+        container.className = SAMPLE_CLASS;
+        group[0].heading.parentNode.insertBefore(container, group[0].heading);
+
+        group.forEach(({ heading, pre }) => {
+            const section = document.createElement("div");
+            section.className = SAMPLE_SECTION_CLASS;
+
+            const header = document.createElement("div");
+            header.className = "busaco-sample-header";
+
+            heading.classList.add(SAMPLE_TITLE_CLASS);
+            heading.dataset.busacoText = heading.textContent;
+            heading.textContent = heading.textContent.replace(/\s*:\s*$/, "");
+
+            header.appendChild(heading);
+            header.appendChild(createCopyButton(pre));
+            section.appendChild(header);
+            section.appendChild(pre);
+            container.appendChild(section);
+        });
+    });
+}
+
+function removeSampleEnhancements() {
+    document.querySelectorAll(`.${SAMPLE_CLASS}`).forEach((container) => {
+        const parent = container.parentNode;
+        container
+            .querySelectorAll(`.${SAMPLE_SECTION_CLASS}`)
+            .forEach((section) => {
+                const heading = section.querySelector(`.${SAMPLE_TITLE_CLASS}`);
+                const pre = section.querySelector("pre");
+
+                if (heading) {
+                    heading.classList.remove(SAMPLE_TITLE_CLASS);
+                    if (heading.className === "") {
+                        heading.removeAttribute("class");
+                    }
+                    if (heading.dataset.busacoText !== undefined) {
+                        heading.textContent = heading.dataset.busacoText;
+                        delete heading.dataset.busacoText;
+                    }
+                    parent.insertBefore(heading, container);
+                }
+                if (pre) {
+                    parent.insertBefore(pre, container);
+                }
+            });
+        container.remove();
+    });
+}
+
+function createCopyButton(pre) {
+    const button = document.createElement("button");
+    let resetTimer = null;
+
+    button.type = "button";
+    button.className = "busaco-copy-button";
+    button.textContent = "Copy";
+    button.setAttribute("aria-label", "Copy sample to clipboard");
+
+    button.addEventListener("click", () => {
+        copyText(sampleText(pre)).then((copied) => {
+            button.textContent = copied ? "Copied!" : "Failed";
+            button.classList.toggle("busaco-copied", copied);
+            clearTimeout(resetTimer);
+            resetTimer = setTimeout(() => {
+                button.textContent = "Copy";
+                button.classList.remove("busaco-copied");
+            }, 1500);
+        });
+    });
+
+    return button;
+}
+
+// USACO's <pre> content always ends with a newline; normalize to exactly one
+function sampleText(pre) {
+    return `${pre.textContent.replace(/\s+$/, "")}\n`;
+}
+
+function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).then(
+            () => true,
+            () => fallbackCopy(text)
+        );
+    }
+    return Promise.resolve(fallbackCopy(text));
+}
+
+function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.cssText =
+        "position:fixed;top:-1000px;left:-1000px;opacity:0";
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    let copied = false;
+    try {
+        copied = document.execCommand("copy");
+    } catch (error) {
+        copied = false;
+    }
+    textarea.remove();
+    return copied;
 }
 
 // Create floating toggle button
@@ -162,6 +350,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             request.darkMode !== undefined
                 ? request.darkMode
                 : settings.darkMode;
+        settings.enhancedSamples =
+            request.enhancedSamples !== undefined
+                ? request.enhancedSamples
+                : settings.enhancedSamples;
         settings.contrast =
             request.contrast !== undefined
                 ? request.contrast

@@ -4,6 +4,7 @@
 const elements = {
     enabled: document.getElementById("enabled"),
     darkMode: document.getElementById("darkMode"),
+    enhancedSamples: document.getElementById("enhancedSamples"),
     contrast: document.getElementById("contrast"),
     grayscale: document.getElementById("grayscale"),
     invert: document.getElementById("invert"),
@@ -15,11 +16,22 @@ const elements = {
 // Load saved settings
 function loadSettings() {
     chrome.storage.sync.get(
-        ["enabled", "darkMode", "contrast", "grayscale", "invert"],
+        [
+            "enabled",
+            "darkMode",
+            "enhancedSamples",
+            "contrast",
+            "grayscale",
+            "invert",
+        ],
         (data) => {
             elements.enabled.checked =
                 data.enabled !== undefined ? data.enabled : true;
             elements.darkMode.checked = data.darkMode || false;
+            elements.enhancedSamples.checked =
+                data.enhancedSamples !== undefined
+                    ? data.enhancedSamples
+                    : true;
             elements.contrast.value =
                 data.contrast !== undefined ? data.contrast : 100;
             elements.grayscale.value =
@@ -43,6 +55,7 @@ function saveSettings() {
     const settings = {
         enabled: elements.enabled.checked,
         darkMode: elements.darkMode.checked,
+        enhancedSamples: elements.enhancedSamples.checked,
         contrast: parseInt(elements.contrast.value),
         grayscale: parseInt(elements.grayscale.value),
         invert: parseInt(elements.invert.value),
@@ -65,6 +78,7 @@ function saveSettings() {
 // Event listeners
 elements.enabled.addEventListener("change", saveSettings);
 elements.darkMode.addEventListener("change", saveSettings);
+elements.enhancedSamples.addEventListener("change", saveSettings);
 
 elements.contrast.addEventListener("input", () => {
     updateSliderValues();
