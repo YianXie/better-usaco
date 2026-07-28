@@ -1,12 +1,17 @@
 # Better USACO Chrome Extension
 
-A Chrome extension that enables dark mode and customizable visual filters for the USACO website (usaco.org). Transform your USACO browsing experience with a modern dark theme and adjustable contrast, grayscale, and invert filters.
+A Chrome extension that makes the USACO website (usaco.org) easier to read and easier to practice on: a dark theme with adjustable visual filters, sample cases you can copy in one click, and editorial pages rebuilt with a readable layout and working syntax highlighting.
 
 ## Features
 
 - **Dark Mode**: Switch the USACO website to a comfortable dark theme
 - **Visual Filters**: Adjustable contrast, grayscale, and invert filters for customizing appearance
 - **Quick Toggle**: Floating button on the page for instant dark mode toggle
+- **Sample I/O Boxes**: Sample input and output are laid out in bordered boxes with a copy button on each
+- **Readable Solution Pages**: USACO's editorials ship as bare HTML with no styling at all — they get a centered reading column, real typography, and dark mode support
+- **Syntax Highlighting**: C++, Java, and Python code in editorials is highlighted, with a copy button per block. (USACO's own highlighter has been broken since the service it loaded from shut down in 2016.)
+- **Editorial Navigation**: A header showing which problem and contest you're reading, a link back to the problem list, and a browser tab title that isn't "Contest Results" on every page
+- **Spoiler Guard**: Optionally blur only the code in an editorial, never the write-up, so you can read the approach and decide separately whether to see the implementation (off by default)
 - **Settings Persistence**: Your preferences are saved automatically and persist across sessions
 - **Real-time Updates**: Changes apply immediately without page reload
 - **Non-intrusive**: Works seamlessly without modifying the original website
@@ -24,13 +29,7 @@ A Chrome extension that enables dark mode and customizable visual filters for th
 
 ### Extension Icons
 
-The extension requires icons in the `icons/` directory:
-
-- `icon16.png` (16x16 pixels)
-- `icon48.png` (48x48 pixels)
-- `icon128.png` (128x128 pixels)
-
-You can create placeholder icons or use any 16x16, 48x48, and 128x128 pixel images for now.
+Icons are included in the `icons/` directory at the three sizes Chrome asks for: `icon16.png`, `icon48.png`, and `icon128.png`.
 
 ## Usage
 
@@ -42,7 +41,10 @@ You can create placeholder icons or use any 16x16, 48x48, and 128x128 pixel imag
 ### Settings Options
 
 - **Enable Extension**: Toggle the extension on/off globally
-- **Dark Mode**: Switch between light and dark themes
+- **Dark Mode**: Switch between light and dark themes (default: off)
+- **Styled Sample I/O**: Bordered sample boxes with copy buttons; off uses the original USACO style (default: on)
+- **Styled Solutions**: Readable layout and syntax highlighting on editorial pages (default: on)
+- **Spoiler Guard**: Blur solution code until you reveal it (default: off)
 - **Contrast**: Adjust contrast level (0-200%, default: 100%)
 - **Grayscale**: Convert colors to grayscale (0-100%, default: 0%)
 - **Invert**: Invert colors (0-100%, default: 0%)
@@ -56,25 +58,35 @@ A floating toggle button appears in the bottom-left corner of USACO pages. Click
 - **Content Script**: Injects styles and applies filters to the USACO website
 - **CSS Filters**: Uses CSS `filter` property for contrast, grayscale, and invert adjustments
 - **Dark Mode Styles**: Applies comprehensive dark mode CSS overrides
+- **Sample Restructuring**: Regroups USACO's flat `<h4>` + `<pre>` sample markup into bordered boxes, and puts the original nodes back when the setting is turned off
+- **Editorial Rebuild**: On `current/data/sol_*.html`, moves the page into a reading column and tokenizes `<pre class="prettyprint">` with a bundled highlighter. Highlighting only wraps the source in spans, so the copy button always yields the original code untouched.
 - **Message Passing**: Communicates between popup and content script for real-time updates
 - **Storage API**: Saves preferences using Chrome's storage API
+
+Everything runs locally. The extension makes no network requests of its own — the logo replacements are bundled with it, and the editorial back link is derived from the page's own filename rather than looked up. See [docs/privacy.md](docs/privacy.md).
 
 ## File Structure
 
 ```
 better-usaco/
-├── manifest.json          # Extension manifest (Manifest V3)
+├── manifest.json          # Extension manifest (Manifest V3), and the version number
 ├── src/
-│   ├── content.js        # Content script for injecting styles/filters
-│   ├── popup.html        # Settings popup UI
-│   ├── popup.js          # Popup logic and event handlers
-│   ├── popup.css         # Popup styling
-│   └── styles.css        # Dark mode CSS for USACO site
-├── icons/                # Extension icons
+│   ├── content.js         # Dark mode, filters, toggle button, sample I/O boxes
+│   ├── solution.js        # Editorial page layout, back link, syntax highlighter
+│   ├── solution.css       # Editorial page styles (light and dark)
+│   ├── styles.css         # Dark mode CSS for the rest of usaco.org
+│   ├── popup.html         # Settings popup UI
+│   ├── popup.js           # Popup logic and event handlers
+│   ├── popup.css          # Popup styling
+│   └── assets/images/     # Bundled transparent-background logo replacements
+├── docs/
+│   ├── privacy.md         # Published privacy policy
+│   └── store-listing.md   # Chrome Web Store listing copy
+├── icons/                 # Extension icons
 │   ├── icon16.png
 │   ├── icon48.png
 │   └── icon128.png
-└── README.md             # This file
+└── README.md              # This file
 ```
 
 ## Permissions
@@ -109,9 +121,12 @@ This extension requires the following permissions:
 Test the extension on various USACO pages:
 
 - Homepage
-- Problem pages
-- Contest pages
+- Problem pages (check the sample I/O boxes and their copy buttons)
+- Contest results pages
 - Training pages
+- Solution pages, linked as "Solution" from any results page — try both the modern `sol_prob1_bronze_season26contest1.html` naming and the older `sol_maxflow_platinum_dec15.html` form, and check C++, Java, and Python blocks
+
+After editing `src/`, click refresh on the extension card, then reload the USACO page. Popup-only changes just need reopening the popup.
 
 ## Troubleshooting
 
@@ -150,6 +165,15 @@ Inspired by [DocsAfterDark](https://github.com/waymondrang/docsafterdark), a sim
 
 ## Version History
 
+- **1.4.0** - Solution pages
+    - Readable layout and typography for editorial pages, in light and dark
+    - Syntax highlighting for C++, Java, and Python, with a copy button per code block
+    - Header with problem/contest title, a link back to the problem list, and a real page title
+    - Optional spoiler guard covering code blocks only
+- **1.3.0** - Sample input/output copy buttons and styling improvements
+- **1.2.1** - Removed unsafe features
+- **1.2.0** - Renamed the project to "Better USACO"
+- **1.1.0** - Main content background, and padding for `pre` and `code` blocks
 - **1.0.0** - Initial release
     - Dark mode support
     - Contrast, grayscale, and invert filters
