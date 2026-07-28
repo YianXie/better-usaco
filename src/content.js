@@ -16,6 +16,8 @@ let settings = {
     enabled: true,
     darkMode: false,
     enhancedSamples: true,
+    styledSolutions: true,
+    spoilerGuard: false,
     contrast: 100,
     grayscale: 0,
     invert: 0,
@@ -37,6 +39,8 @@ function loadSettings() {
             "enabled",
             "darkMode",
             "enhancedSamples",
+            "styledSolutions",
+            "spoilerGuard",
             "contrast",
             "grayscale",
             "invert",
@@ -48,6 +52,11 @@ function loadSettings() {
                 data.enhancedSamples !== undefined
                     ? data.enhancedSamples
                     : true;
+            settings.styledSolutions =
+                data.styledSolutions !== undefined
+                    ? data.styledSolutions
+                    : true;
+            settings.spoilerGuard = data.spoilerGuard || false;
             settings.contrast =
                 data.contrast !== undefined ? data.contrast : 100;
             settings.grayscale =
@@ -106,6 +115,13 @@ function applyStyles() {
     } else {
         removeSampleEnhancements();
     }
+
+    // Defined in solution.js; a no-op on every page that is not an editorial
+    if (settings.styledSolutions) {
+        enhanceSolutionPage(settings.spoilerGuard);
+    } else {
+        removeSolutionEnhancements();
+    }
 }
 
 // Remove all styles
@@ -113,6 +129,7 @@ function removeStyles() {
     document.documentElement.style.filter = "";
     document.documentElement.classList.remove("usaco-dark-mode");
     removeSampleEnhancements();
+    removeSolutionEnhancements();
 }
 
 // --- Sample input/output boxes -------------------------------------------
@@ -354,6 +371,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             request.enhancedSamples !== undefined
                 ? request.enhancedSamples
                 : settings.enhancedSamples;
+        settings.styledSolutions =
+            request.styledSolutions !== undefined
+                ? request.styledSolutions
+                : settings.styledSolutions;
+        settings.spoilerGuard =
+            request.spoilerGuard !== undefined
+                ? request.spoilerGuard
+                : settings.spoilerGuard;
         settings.contrast =
             request.contrast !== undefined
                 ? request.contrast

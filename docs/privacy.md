@@ -41,7 +41,9 @@ This processing happens **entirely on your device** and inside your browser.
 
 The Extension may read page elements (such as images or text colors) **only to apply the visual theme**, and this information is **never transmitted** outside your browser.
 
-On problem pages the Extension adds a “Copy” button beside each sample input/output block. When **you** click it, the sample text already visible on the page is written to your clipboard. Nothing is read from your clipboard, and no clipboard content is stored or transmitted. This requires no additional Chrome permission.
+On problem pages the Extension adds a “Copy” button beside each sample input/output block, and on solution pages beside each code block. When **you** click it, the text already visible on the page is written to your clipboard. Nothing is read from your clipboard, and no clipboard content is stored or transmitted. This requires no additional Chrome permission.
+
+On solution pages the Extension also re-lays out the page, colors the code blocks, and adds a link back to the contest’s problem list. The syntax coloring runs entirely on your device, and the back link is derived from the page’s own address — no lookup or request is made to build it.
 
 All images the Extension substitutes into the page (for example, transparent-background versions of the USACO logo) are **bundled inside the Extension itself**. Displaying them makes no network request to any third-party host.
 
@@ -49,7 +51,7 @@ All images the Extension substitutes into the page (for example, transparent-bac
 
 1. `storage` (Chrome Storage)
 
-Used only to save your dark-theme preferences (contrast, invert, grayscale, and on/off state).
+Used only to save your display preferences (contrast, invert, grayscale, on/off state, and which page enhancements are enabled).
 These values:
 
 Contain **no personal data**

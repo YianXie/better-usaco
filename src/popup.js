@@ -5,6 +5,8 @@ const elements = {
     enabled: document.getElementById("enabled"),
     darkMode: document.getElementById("darkMode"),
     enhancedSamples: document.getElementById("enhancedSamples"),
+    styledSolutions: document.getElementById("styledSolutions"),
+    spoilerGuard: document.getElementById("spoilerGuard"),
     contrast: document.getElementById("contrast"),
     grayscale: document.getElementById("grayscale"),
     invert: document.getElementById("invert"),
@@ -20,6 +22,8 @@ function loadSettings() {
             "enabled",
             "darkMode",
             "enhancedSamples",
+            "styledSolutions",
+            "spoilerGuard",
             "contrast",
             "grayscale",
             "invert",
@@ -32,6 +36,11 @@ function loadSettings() {
                 data.enhancedSamples !== undefined
                     ? data.enhancedSamples
                     : true;
+            elements.styledSolutions.checked =
+                data.styledSolutions !== undefined
+                    ? data.styledSolutions
+                    : true;
+            elements.spoilerGuard.checked = data.spoilerGuard || false;
             elements.contrast.value =
                 data.contrast !== undefined ? data.contrast : 100;
             elements.grayscale.value =
@@ -56,6 +65,8 @@ function saveSettings() {
         enabled: elements.enabled.checked,
         darkMode: elements.darkMode.checked,
         enhancedSamples: elements.enhancedSamples.checked,
+        styledSolutions: elements.styledSolutions.checked,
+        spoilerGuard: elements.spoilerGuard.checked,
         contrast: parseInt(elements.contrast.value),
         grayscale: parseInt(elements.grayscale.value),
         invert: parseInt(elements.invert.value),
@@ -79,6 +90,8 @@ function saveSettings() {
 elements.enabled.addEventListener("change", saveSettings);
 elements.darkMode.addEventListener("change", saveSettings);
 elements.enhancedSamples.addEventListener("change", saveSettings);
+elements.styledSolutions.addEventListener("change", saveSettings);
+elements.spoilerGuard.addEventListener("change", saveSettings);
 
 elements.contrast.addEventListener("input", () => {
     updateSliderValues();

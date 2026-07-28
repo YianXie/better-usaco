@@ -1,0 +1,337 @@
+/* Better USACO — solution (editorial) page styles
+   Everything here is scoped under html.busaco-solution-page, a class solution.js
+   adds only on https://usaco.org/current/data/sol_*.html. Those pages load no
+   stylesheet of their own, so unlike styles.css these rules are not scoped under
+   .usaco-dark-mode — they have to provide the light theme too, and the --sol-*
+   custom properties below are redefined for dark mode further down.
+
+   This file is injected after styles.css so that equal-specificity rules win on
+   source order; selectors still carry the extra element/class qualifiers needed
+   to outrank the broad `.usaco-dark-mode *` / `pre` / `button` rules there. */
+
+:root {
+    --sol-bg: #ffffff;
+    --sol-surface: #f6f8fa;
+    --sol-text: #1f2328;
+    --sol-muted: #59636e;
+    --sol-border: #d1d9e0;
+    --sol-link: #0969da;
+    --sol-code-bg: #f6f8fa;
+    --sol-code-header-bg: #eceff2;
+    --sol-button-border: #c2c2c2;
+    --sol-button-color: #555555;
+    --sol-button-hover-bg: #e2e6ea;
+    --sol-copied-color: #1b7a3d;
+
+    --sol-kw: #cf222e;
+    --sol-type: #953800;
+    --sol-fn: #8250df;
+    --sol-str: #0a3069;
+    --sol-num: #0550ae;
+    --sol-lit: #0550ae;
+    --sol-com: #6e7781;
+    --sol-pre: #cf222e;
+    --sol-dec: #953800;
+}
+
+html.usaco-dark-mode {
+    --sol-bg: #1a1a1a;
+    --sol-surface: #232323;
+    --sol-text: #e0e0e0;
+    --sol-muted: #9a9a9a;
+    --sol-border: #404040;
+    --sol-link: #64b5f6;
+    --sol-code-bg: #232323;
+    --sol-code-header-bg: #2d2d2d;
+    --sol-button-border: #5c5c5c;
+    --sol-button-color: #c4c4c4;
+    --sol-button-hover-bg: #3b3b3b;
+    --sol-copied-color: #7ddba0;
+
+    --sol-kw: #c678dd;
+    --sol-type: #e5c07b;
+    --sol-fn: #61afef;
+    --sol-str: #98c379;
+    --sol-num: #d19a66;
+    --sol-lit: #d19a66;
+    --sol-com: #7f848e;
+    --sol-pre: #c678dd;
+    --sol-dec: #e5c07b;
+}
+
+/* --- Page shell -------------------------------------------------------- */
+
+html.busaco-solution-page body {
+    margin: 0 !important;
+    background-color: var(--sol-bg) !important;
+}
+
+html.busaco-solution-page div.busaco-solution {
+    max-width: 860px !important;
+    margin: 0 auto !important;
+    padding: 28px 24px 140px !important;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+        sans-serif !important;
+    font-size: 16px !important;
+    line-height: 1.7 !important;
+    color: var(--sol-text) !important;
+    text-align: left !important;
+}
+
+html.busaco-solution-page .busaco-solution p,
+html.busaco-solution-page .busaco-solution li,
+html.busaco-solution-page .busaco-solution div {
+    color: var(--sol-text) !important;
+}
+
+html.busaco-solution-page .busaco-solution p {
+    margin: 0 0 14px !important;
+}
+
+html.busaco-solution-page .busaco-solution ul,
+html.busaco-solution-page .busaco-solution ol {
+    margin: 0 0 14px !important;
+    padding-left: 26px !important;
+}
+
+html.busaco-solution-page .busaco-solution li {
+    margin-bottom: 4px !important;
+}
+
+html.busaco-solution-page .busaco-solution a {
+    color: var(--sol-link) !important;
+}
+
+html.busaco-solution-page .busaco-solution img {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+html.busaco-solution-page .busaco-solution hr {
+    border: none !important;
+    border-top: 1px solid var(--sol-border) !important;
+    margin: 24px 0 !important;
+}
+
+/* Newer editorials wrap each subtask in div.prob-section with an <h4> title */
+html.busaco-solution-page .busaco-solution h1,
+html.busaco-solution-page .busaco-solution h2,
+html.busaco-solution-page .busaco-solution h3,
+html.busaco-solution-page .busaco-solution h4 {
+    margin: 26px 0 10px !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+    color: var(--sol-text) !important;
+}
+
+html.busaco-solution-page .busaco-solution h4 {
+    font-size: 17px !important;
+}
+
+/* --- Header ------------------------------------------------------------ */
+
+html.busaco-solution-page header.busaco-solution-header {
+    margin-bottom: 24px !important;
+    padding-bottom: 16px !important;
+    border-bottom: 1px solid var(--sol-border) !important;
+}
+
+html.busaco-solution-page a.busaco-solution-back {
+    display: inline-block !important;
+    margin-bottom: 10px !important;
+    font-size: 13px !important;
+    color: var(--sol-link) !important;
+    text-decoration: none !important;
+}
+
+html.busaco-solution-page a.busaco-solution-back:hover {
+    text-decoration: underline !important;
+}
+
+html.busaco-solution-page h1.busaco-solution-title {
+    margin: 0 !important;
+    font-size: 26px !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.01em !important;
+    color: var(--sol-text) !important;
+}
+
+html.busaco-solution-page p.busaco-solution-meta {
+    margin: 5px 0 0 !important;
+    font-size: 14px !important;
+    color: var(--sol-muted) !important;
+}
+
+/* --- Blocks that are not source code ----------------------------------- */
+
+/* Bare <pre> holds ASCII diagrams and sample data, never code — it gets the
+   surface treatment but is deliberately left untokenized. */
+html.busaco-solution-page .busaco-solution pre {
+    margin: 16px 0 !important;
+    padding: 10px 12px !important;
+    border: 1px solid var(--sol-border) !important;
+    border-radius: 6px !important;
+    background-color: var(--sol-surface) !important;
+    color: var(--sol-text) !important;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace !important;
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+    white-space: pre !important;
+    overflow-x: auto !important;
+}
+
+/* --- Code blocks ------------------------------------------------------- */
+
+html.busaco-solution-page div.busaco-code {
+    position: relative !important;
+    margin: 18px 0 !important;
+    border: 1px solid var(--sol-border) !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    background-color: var(--sol-code-bg) !important;
+}
+
+html.busaco-solution-page div.busaco-code-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    padding: 6px 12px !important;
+    background-color: var(--sol-code-header-bg) !important;
+    border-bottom: 1px solid var(--sol-border) !important;
+}
+
+html.busaco-solution-page span.busaco-code-lang {
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    color: var(--sol-muted) !important;
+}
+
+html.busaco-solution-page .busaco-code pre.prettyprint {
+    margin: 0 !important;
+    padding: 12px 14px !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background-color: var(--sol-code-bg) !important;
+    color: var(--sol-text) !important;
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+    tab-size: 4 !important;
+}
+
+/* Shares createCopyButton() with the sample boxes, so it needs the matching
+   look under this page's palette. */
+html.busaco-solution-page .busaco-code button.busaco-copy-button {
+    flex: none !important;
+    padding: 2px 10px !important;
+    border: 1px solid var(--sol-button-border) !important;
+    border-radius: 4px !important;
+    background-color: transparent !important;
+    color: var(--sol-button-color) !important;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+    cursor: pointer !important;
+    transition: background-color 0.15s ease !important;
+}
+
+html.busaco-solution-page .busaco-code button.busaco-copy-button:hover {
+    background-color: var(--sol-button-hover-bg) !important;
+}
+
+html.busaco-solution-page .busaco-code button.busaco-copy-button.busaco-copied {
+    color: var(--sol-copied-color) !important;
+    border-color: var(--sol-copied-color) !important;
+}
+
+/* --- Syntax tokens ------------------------------------------------------ */
+
+html.busaco-solution-page .busaco-code span.busaco-tok-kw {
+    color: var(--sol-kw) !important;
+}
+
+html.busaco-solution-page .busaco-code span.busaco-tok-type {
+    color: var(--sol-type) !important;
+}
+
+html.busaco-solution-page .busaco-code span.busaco-tok-fn {
+    color: var(--sol-fn) !important;
+}
+
+html.busaco-solution-page .busaco-code span.busaco-tok-str {
+    color: var(--sol-str) !important;
+}
+
+html.busaco-solution-page .busaco-code span.busaco-tok-num {
+    color: var(--sol-num) !important;
+}
+
+html.busaco-solution-page .busaco-code span.busaco-tok-lit {
+    color: var(--sol-lit) !important;
+}
+
+html.busaco-solution-page .busaco-code span.busaco-tok-com {
+    color: var(--sol-com) !important;
+    font-style: italic !important;
+}
+
+html.busaco-solution-page .busaco-code span.busaco-tok-pre {
+    color: var(--sol-pre) !important;
+}
+
+html.busaco-solution-page .busaco-code span.busaco-tok-dec {
+    color: var(--sol-dec) !important;
+}
+
+/* --- Spoiler guard ------------------------------------------------------
+   Applies to code blocks only; the write-up around them stays readable. A
+   guarded block is also capped in height so a hidden 200-line implementation
+   does not push the rest of the editorial off the screen. */
+
+html.busaco-solution-page button.busaco-code-reveal {
+    display: none !important;
+}
+
+html.busaco-solution-page .busaco-code-hidden pre.prettyprint {
+    max-height: 190px !important;
+    overflow: hidden !important;
+    filter: blur(6px) !important;
+    opacity: 0.55 !important;
+    user-select: none !important;
+    pointer-events: none !important;
+}
+
+/* Copying is revealing, so the copy button comes back with the code */
+html.busaco-solution-page .busaco-code-hidden button.busaco-copy-button {
+    visibility: hidden !important;
+}
+
+html.busaco-solution-page .busaco-code-hidden button.busaco-code-reveal {
+    display: block !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 5 !important;
+    padding: 8px 18px !important;
+    border: 1px solid var(--sol-border) !important;
+    border-radius: 6px !important;
+    background-color: var(--sol-code-header-bg) !important;
+    color: var(--sol-text) !important;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18) !important;
+}
+
+html.busaco-solution-page .busaco-code-hidden button.busaco-code-reveal:hover {
+    background-color: var(--sol-button-hover-bg) !important;
+}
