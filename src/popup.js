@@ -1,4 +1,4 @@
-// USACO Dark Mode Popup Script
+// Better USACO Popup Script
 // Handles user interactions and settings management
 
 const elements = {

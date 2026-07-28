@@ -1,4 +1,4 @@
-# USACO Dark Mode Chrome Extension
+# Better USACO Chrome Extension
 
 A Chrome extension that enables dark mode and customizable visual filters for the USACO website (usaco.org). Transform your USACO browsing experience with a modern dark theme and adjustable contrast, grayscale, and invert filters.
 
@@ -19,7 +19,7 @@ A Chrome extension that enables dark mode and customizable visual filters for th
 2. Open Chrome and navigate to `chrome://extensions/`
 3. Enable "Developer mode" (toggle in the top right)
 4. Click "Load unpacked"
-5. Select the `dark-mode-usaco` folder
+5. Select the `better-usaco` folder
 6. The extension is now installed and active!
 
 ### Extension Icons
@@ -62,7 +62,7 @@ A floating toggle button appears in the bottom-left corner of USACO pages. Click
 ## File Structure
 
 ```
-dark-mode-usaco/
+better-usaco/
 ├── manifest.json          # Extension manifest (Manifest V3)
 ├── src/
 │   ├── content.js        # Content script for injecting styles/filters

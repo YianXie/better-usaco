@@ -1,4 +1,4 @@
-// USACO Dark Mode Content Script
+// Better USACO Content Script
 // Handles dark mode, filters, and toggle button
 
 const IMAGE_SRC_PREFIX = "https://usaco.org/current/images/";

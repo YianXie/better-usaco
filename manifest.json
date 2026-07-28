@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
-    "name": "USACO Dark Mode",
-    "version": "1.1.0",
+    "name": "Better USACO",
+    "version": "1.2.0",
     "description": "Enable dark mode and customize appearance on the USACO website with adjustable contrast, grayscale, and invert filters.",
     "permissions": ["storage", "activeTab"],
     "host_permissions": ["https://usaco.org/*"],
