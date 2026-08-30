@@ -1,5 +1,9 @@
 # Better USACO Chrome Extension
 
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/mcmnjckmjhifcbfcakbpiedemkmdgahn?label=chrome%20web%20store)](https://chromewebstore.google.com/detail/better-usaco/mcmnjckmjhifcbfcakbpiedemkmdgahn)
+[![Users](https://img.shields.io/chrome-web-store/users/mcmnjckmjhifcbfcakbpiedemkmdgahn?label=users)](https://chromewebstore.google.com/detail/better-usaco/mcmnjckmjhifcbfcakbpiedemkmdgahn)
+[![Rating](https://img.shields.io/chrome-web-store/rating/mcmnjckmjhifcbfcakbpiedemkmdgahn?label=rating)](https://chromewebstore.google.com/detail/better-usaco/mcmnjckmjhifcbfcakbpiedemkmdgahn)
+
 A Chrome extension that makes the USACO website (usaco.org) easier to read and easier to practice on: a dark theme with adjustable visual filters, sample cases you can copy in one click, and editorial pages rebuilt with a readable layout and working syntax highlighting.
 
 ## Features
@@ -17,6 +21,10 @@ A Chrome extension that makes the USACO website (usaco.org) easier to read and e
 - **Non-intrusive**: Works seamlessly without modifying the original website
 
 ## Installation
+
+### From the Chrome Web Store
+
+[Install Better USACO](https://chromewebstore.google.com/detail/better-usaco/mcmnjckmjhifcbfcakbpiedemkmdgahn) — the published build, which Chrome keeps updated on its own.
 
 ### From Source
 
