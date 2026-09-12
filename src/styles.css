@@ -307,7 +307,9 @@ html.usaco-dark-mode {
    scoped under .usaco-dark-mode so they apply in light mode too; the colors
    come from the custom properties at the top of this file. Selectors carry an
    extra tag qualifier so they outrank the broad `.usaco-dark-mode *` /
-   `.usaco-dark-mode pre` rules above regardless of source order. */
+   `.usaco-dark-mode pre` rules above regardless of source order. The sample
+   <pre> is matched by position rather than by an `in`/`out` class, because
+   2015-era problems ship neither. */
 div.busaco-sample {
     margin: 16px 0 !important;
     border: 1px solid var(--sample-border) !important;
@@ -338,8 +340,7 @@ div.busaco-sample-header {
     color: var(--sample-title-color) !important;
 }
 
-.busaco-sample pre.in,
-.busaco-sample pre.out {
+div.busaco-sample pre {
     margin: 0 !important;
     padding: 10px 12px !important;
     border: none !important;

@@ -173,6 +173,9 @@ Inspired by [DocsAfterDark](https://github.com/waymondrang/docsafterdark), a sim
 
 ## Version History
 
+- **1.5.0** - Older problem pages
+    - Sample input/output boxes on pre-2015 and 2015-era problems, which ship different markup (or none at all)
+    - Fixed the header logo staying opaque on problem pages and on every page reached from one
 - **1.4.0** - Solution pages
     - Readable layout and typography for editorial pages, in light and dark
     - Syntax highlighting for C++, Java, and Python, with a copy button per code block

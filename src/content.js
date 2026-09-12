@@ -1,16 +1,39 @@
 // Better USACO Content Script
 // Handles dark mode, filters, and toggle button
 
-const IMAGE_SRC_PREFIX = "https://usaco.org/current/images/";
-
-// Transparent-background replacements for USACO's logo images. The files are
-// bundled with the extension (see web_accessible_resources in manifest.json) so
-// that rendering a themed page never makes a request to a third-party host.
+// Transparent-background replacements for USACO's logo images, keyed by the
+// image path relative to the site's `current/` directory. The files are bundled
+// with the extension (see web_accessible_resources in manifest.json) so that
+// rendering a themed page never makes a request to a third-party host.
 const LOGO_REPLACEMENTS = {
-    [`${IMAGE_SRC_PREFIX}usaco_logo.png`]: "src/assets/images/usaco-logo.png",
-    [`${IMAGE_SRC_PREFIX}sponsors/logo_vplanet.jpg`]:
-        "src/assets/images/logo-vplanet.png",
+    "images/usaco_logo.png": "src/assets/images/usaco-logo.png",
+    "images/sponsors/logo_vplanet.jpg": "src/assets/images/logo-vplanet.png",
 };
+
+// USACO's markup writes those images as page-relative URLs
+// (`current/images/usaco_logo.png`), so the absolute src depends on the
+// directory the page is served from: usaco.org/index.php resolves them under
+// /current/, while usaco.org/current/index.php — where every problem page and
+// every link followed from one lives — resolves them under /current/current/,
+// which the server happily serves for any depth. Strip the repeated segments so
+// each form maps to the same key.
+const LOGO_PATH_RE = /^(?:\/current)+\/(.+)$/;
+
+function logoReplacementFor(img) {
+    let path;
+    try {
+        const url = new URL(img.src);
+        if (url.hostname !== "usaco.org") {
+            return undefined;
+        }
+        path = url.pathname;
+    } catch (error) {
+        return undefined;
+    }
+
+    const match = LOGO_PATH_RE.exec(path);
+    return match ? LOGO_REPLACEMENTS[match[1]] : undefined;
+}
 
 let settings = {
     enabled: true,
@@ -104,7 +127,7 @@ function applyStyles() {
     }
 
     document.querySelectorAll("a>img").forEach((img) => {
-        const replacement = LOGO_REPLACEMENTS[img.src];
+        const replacement = logoReplacementFor(img);
         if (replacement) {
             img.src = chrome.runtime.getURL(replacement);
         }
@@ -137,29 +160,59 @@ function removeStyles() {
 // followed by <h4>SAMPLE OUTPUT:</h4><pre class="out">. enhanceSamples() moves
 // each such pair into a bordered container with a header row and a copy button;
 // removeSampleEnhancements() puts the original nodes back exactly as they were.
+// Pre-2015 problems have no such markup at all (see the legacy section below),
+// so enhanceSamples() synthesizes it first.
 
 const SAMPLE_CLASS = "busaco-sample";
 const SAMPLE_SECTION_CLASS = "busaco-sample-section";
 const SAMPLE_TITLE_CLASS = "busaco-sample-title";
 
-// Collect every <h4> + <pre> sample pair, in document order
+// Collect every <h4> + <pre> sample pair, in document order. The heading is
+// what identifies a sample, not the <pre>: 2015-era problems (cpid ~520-540)
+// write the pair as `<h4>SAMPLE INPUT:</h4><pre>` with no in/out class at all,
+// so keying off `pre.in, pre.out` misses them entirely.
 function collectSampleBlocks() {
     const blocks = [];
-    document.querySelectorAll("pre.in, pre.out").forEach((pre) => {
-        const heading = pre.previousElementSibling;
-        if (!heading || heading.tagName !== "H4") {
+    document.querySelectorAll("h4").forEach((heading) => {
+        const match = /sample\s+(input|output)/i.exec(heading.textContent);
+        if (!match) {
             return;
         }
-        if (!/sample\s+(input|output)/i.test(heading.textContent)) {
+        const pre = heading.nextElementSibling;
+        if (!pre || pre.tagName !== "PRE") {
+            return;
+        }
+        // enhanceSamples() pulls everything between the two into the box, so
+        // insist there is nothing there worth reading
+        if (!onlyWhitespaceBetween(heading, pre)) {
             return;
         }
         blocks.push({
             heading,
             pre,
-            kind: pre.classList.contains("in") ? "in" : "out",
+            kind: /input/i.test(match[1]) ? "in" : "out",
         });
     });
     return blocks;
+}
+
+// True when nothing but whitespace (and comments) separates two siblings.
+// nextElementSibling alone is not enough: on legacy pages the sample input and
+// sample output are the nearest elements to each other but have paragraphs of
+// prose between them, and that prose must not be stranded outside the box.
+function onlyWhitespaceBetween(start, end) {
+    let node = start.nextSibling;
+    while (node && node !== end) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            if (node.data.trim() !== "") {
+                return false;
+            }
+        } else if (node.nodeType !== Node.COMMENT_NODE) {
+            return false;
+        }
+        node = node.nextSibling;
+    }
+    return node === end;
 }
 
 // Group an input block with the output block that immediately follows it, so
@@ -173,7 +226,8 @@ function groupSampleBlocks(blocks) {
             previous &&
             previous.length === 1 &&
             previous[0].kind === "in" &&
-            previous[0].pre.nextElementSibling === block.heading;
+            previous[0].pre.nextElementSibling === block.heading &&
+            onlyWhitespaceBetween(previous[0].pre, block.heading);
 
         if (followsInput) {
             previous.push(block);
@@ -185,14 +239,31 @@ function groupSampleBlocks(blocks) {
 }
 
 function enhanceSamples() {
+    normalizeLegacySamples();
+
     groupSampleBlocks(collectSampleBlocks()).forEach((group) => {
         // Already wrapped (applyStyles re-runs on navigation)
         if (group[0].heading.closest(`.${SAMPLE_CLASS}`)) {
             return;
         }
 
+        // Every node from the first heading to the last <pre>, in order. The
+        // pair is not enough: the whitespace between the nodes has to travel
+        // with them, or removeSampleEnhancements() would reinsert the pair in
+        // front of what was left behind rather than around it, quietly shifting
+        // the statement's whitespace on every toggle.
+        const last = group[group.length - 1].pre;
+        const originals = [];
+        for (let node = group[0].heading; node; node = node.nextSibling) {
+            originals.push(node);
+            if (node === last) {
+                break;
+            }
+        }
+
         const container = document.createElement("div");
         container.className = SAMPLE_CLASS;
+        container.busacoOriginals = originals;
         group[0].heading.parentNode.insertBefore(container, group[0].heading);
 
         group.forEach(({ heading, pre }) => {
@@ -212,35 +283,203 @@ function enhanceSamples() {
             section.appendChild(pre);
             container.appendChild(section);
         });
+
+        // The headings and <pre>s now live in the sections; whatever sat
+        // between them does not, so bring it along. Its resting place inside
+        // the container does not matter (it is whitespace, per
+        // collectSampleBlocks / groupSampleBlocks) — the recorded order is what
+        // puts it back.
+        originals.forEach((node) => {
+            if (node.parentNode === container.parentNode) {
+                container.appendChild(node);
+            }
+        });
     });
 }
 
 function removeSampleEnhancements() {
     document.querySelectorAll(`.${SAMPLE_CLASS}`).forEach((container) => {
         const parent = container.parentNode;
-        container
-            .querySelectorAll(`.${SAMPLE_SECTION_CLASS}`)
-            .forEach((section) => {
-                const heading = section.querySelector(`.${SAMPLE_TITLE_CLASS}`);
-                const pre = section.querySelector("pre");
 
-                if (heading) {
-                    heading.classList.remove(SAMPLE_TITLE_CLASS);
-                    if (heading.className === "") {
-                        heading.removeAttribute("class");
-                    }
-                    if (heading.dataset.busacoText !== undefined) {
-                        heading.textContent = heading.dataset.busacoText;
-                        delete heading.dataset.busacoText;
-                    }
-                    parent.insertBefore(heading, container);
+        // Recorded by enhanceSamples(). The fallback is for a container this
+        // page's script did not build — there should be none, but an empty list
+        // would take the statement down with the container.
+        const originals =
+            container.busacoOriginals ||
+            Array.from(
+                container.querySelectorAll(`.${SAMPLE_TITLE_CLASS}, pre`)
+            );
+
+        container
+            .querySelectorAll(`.${SAMPLE_TITLE_CLASS}`)
+            .forEach((heading) => {
+                heading.classList.remove(SAMPLE_TITLE_CLASS);
+                if (heading.className === "") {
+                    heading.removeAttribute("class");
                 }
-                if (pre) {
-                    parent.insertBefore(pre, container);
+                if (heading.dataset.busacoText !== undefined) {
+                    heading.textContent = heading.dataset.busacoText;
+                    delete heading.dataset.busacoText;
                 }
             });
+
+        originals.forEach((node) => parent.insertBefore(node, container));
         container.remove();
     });
+
+    // After the containers are gone the synthesized headings and <pre>s are
+    // plain siblings again, which is where denormalizeLegacySamples() expects
+    // to find them.
+    denormalizeLegacySamples();
+}
+
+// --- Legacy (pre-2015) sample blocks --------------------------------------
+// Problems older than roughly cpid 530 have no sample markup to enhance: the
+// whole statement is one plain-text node inside `span#probtext-text`, with the
+// samples marked only by a line of text —
+//
+//     SAMPLE INPUT (file paint.in):
+//     <blank line>
+//     6 2
+//     2 R
+//     <blank line>
+//     INPUT DETAILS:
+//
+// normalizeLegacySamples() rewrites each of those runs into the markup the
+// modern pages already ship (<h4> + <pre class="in">), so collectSampleBlocks()
+// and enhanceSamples() below need no special case. Every synthesized element
+// carries the exact source text it replaced in `data-busaco-legacy`, so
+// denormalizeLegacySamples() can put the text node back character for character
+// — the sample data is therefore held twice, in the <pre> and in the attribute,
+// which is a few hundred bytes well spent on an exact round trip.
+
+// A few statements are served with CRLF line endings; the HTML parser folds
+// those to LF in the DOM, but tolerate a stray \r so the matching does not
+// depend on that.
+const LEGACY_SAMPLE_HEADER_RE =
+    /^[ \t]*SAMPLE[ \t]+(INPUT|OUTPUT)\b[^\n]*:[ \t\r]*$/i;
+
+// Locate every legacy sample run in a block of text, as offsets into it
+function findLegacySampleSections(text) {
+    const sections = [];
+    const lines = text.split("\n");
+    let offset = 0;
+
+    for (let index = 0; index < lines.length; index++) {
+        const line = lines[index];
+        const headStart = offset;
+        // The final line has no trailing newline; slice() clamps, so counting
+        // one anyway costs nothing and keeps the arithmetic uniform.
+        offset += line.length + 1;
+
+        const match = LEGACY_SAMPLE_HEADER_RE.exec(line);
+        if (!match) {
+            continue;
+        }
+
+        // Blank lines between the heading and the data belong to the heading
+        let dataStart = offset;
+        let cursor = index + 1;
+        while (cursor < lines.length && lines[cursor].trim() === "") {
+            dataStart += lines[cursor].length + 1;
+            cursor++;
+        }
+
+        // The data runs until the next blank line (or the end of the text)
+        let dataEnd = dataStart;
+        let end = cursor;
+        while (end < lines.length && lines[end].trim() !== "") {
+            dataEnd += lines[end].length + 1;
+            end++;
+        }
+
+        // A heading with no data under it is prose, not a sample
+        if (end === cursor) {
+            continue;
+        }
+
+        sections.push({
+            kind: /input/i.test(match[1]) ? "in" : "out",
+            title: line.trim(),
+            headText: text.slice(headStart, dataStart),
+            dataText: text.slice(dataStart, dataEnd),
+            start: headStart,
+            end: dataEnd,
+        });
+
+        offset = dataEnd;
+        index = end - 1;
+    }
+
+    return sections;
+}
+
+function normalizeLegacySamples() {
+    document.querySelectorAll("#probtext-text").forEach((statement) => {
+        // Modern statements already ship the markup this would synthesize
+        if (statement.querySelector("pre.in, pre.out")) {
+            return;
+        }
+
+        Array.from(statement.childNodes).forEach((node) => {
+            if (node.nodeType !== Node.TEXT_NODE) {
+                return;
+            }
+
+            const sections = findLegacySampleSections(node.data);
+            if (sections.length === 0) {
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+            let cursor = 0;
+
+            sections.forEach((section) => {
+                if (section.start > cursor) {
+                    fragment.appendChild(
+                        document.createTextNode(
+                            node.data.slice(cursor, section.start)
+                        )
+                    );
+                }
+
+                const heading = document.createElement("h4");
+                heading.textContent = section.title;
+                heading.dataset.busacoLegacy = section.headText;
+
+                const pre = document.createElement("pre");
+                pre.className = section.kind;
+                pre.textContent = section.dataText;
+                pre.dataset.busacoLegacy = section.dataText;
+
+                fragment.appendChild(heading);
+                fragment.appendChild(pre);
+                cursor = section.end;
+            });
+
+            const tail = node.data.slice(cursor);
+            if (tail !== "") {
+                fragment.appendChild(document.createTextNode(tail));
+            }
+
+            node.parentNode.replaceChild(fragment, node);
+        });
+    });
+}
+
+function denormalizeLegacySamples() {
+    const parents = new Set();
+
+    document.querySelectorAll("[data-busaco-legacy]").forEach((element) => {
+        parents.add(element.parentNode);
+        element.parentNode.replaceChild(
+            document.createTextNode(element.dataset.busacoLegacy),
+            element
+        );
+    });
+
+    // Merge the restored slices back into the single text node they came from
+    parents.forEach((parent) => parent.normalize());
 }
 
 function createCopyButton(pre) {
