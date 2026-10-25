@@ -6,6 +6,8 @@
 
 A Chrome extension that makes the USACO website (usaco.org) easier to read and easier to practice on: a dark theme with adjustable visual filters, sample cases you can copy in one click, and editorial pages rebuilt with a readable layout and working syntax highlighting.
 
+500+ installs on Chrome Web Store. Try it [here](https://chromewebstore.google.com/detail/better-usaco/mcmnjckmjhifcbfcakbpiedemkmdgahn)!
+
 ## Features
 
 - **Dark Mode**: Switch the USACO website to a comfortable dark theme
