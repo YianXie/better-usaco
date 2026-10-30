@@ -18,6 +18,7 @@ A Chrome extension that makes the USACO website (usaco.org) easier to read and e
 - **Syntax Highlighting**: C++, Java, and Python code in editorials is highlighted, with a copy button per block. (USACO's own highlighter has been broken since the service it loaded from shut down in 2016.)
 - **Editorial Navigation**: A header showing which problem and contest you're reading, a link back to the problem list, and a browser tab title that isn't "Contest Results" on every page
 - **Spoiler Guard**: Optionally blur only the code in an editorial, never the write-up, so you can read the approach and decide separately whether to see the implementation (off by default)
+- **Remembered Language**: The submission language you pick is saved and preselected on every problem page
 - **Settings Persistence**: Your preferences are saved automatically and persist across sessions
 - **Real-time Updates**: Changes apply immediately without page reload
 - **Non-intrusive**: Works seamlessly without modifying the original website

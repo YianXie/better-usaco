@@ -53,6 +53,67 @@ function init() {
     loadSettings();
     createToggleButton();
     applyStyles();
+    setupLanguageMemory();
+}
+
+// --- Remember the submission language ---------------------------------------
+// USACO's submit form resets its language dropdown on every page load. We save
+// whatever the user picks and restore it next time. The option's visible text
+// is matched first because it is more stable than USACO's numeric values;
+// the value is only a fallback.
+const PREFERRED_LANGUAGE_KEY = "preferredLanguage";
+
+function findLanguageSelect() {
+    const selects = Array.from(document.querySelectorAll("select"));
+    const byName = selects.find((s) =>
+        `${s.name} ${s.id}`.toLowerCase().includes("lang")
+    );
+    if (byName) return byName;
+    // Fallback: the dropdown whose options look like programming languages
+    return (
+        selects.find((s) => {
+            const texts = Array.from(s.options, (o) => o.text.toLowerCase());
+            return (
+                texts.some((t) => t.includes("python")) &&
+                texts.some((t) => t.includes("java"))
+            );
+        }) || null
+    );
+}
+
+function setupLanguageMemory() {
+    const select = findLanguageSelect();
+    if (!select || select.dataset.busacoLangMemory) return;
+    select.dataset.busacoLangMemory = "true";
+    let restoring = false;
+
+    chrome.storage.sync.get(PREFERRED_LANGUAGE_KEY, (data) => {
+        const saved = data[PREFERRED_LANGUAGE_KEY];
+        if (!saved || !settings.enabled) return;
+        const options = Array.from(select.options);
+        const match =
+            options.find((o) => o.text.trim() === saved.text) ||
+            options.find((o) => o.value === saved.value);
+        if (match && select.value !== match.value) {
+            select.value = match.value;
+            // Let the page react as if the user picked it
+            restoring = true;
+            select.dispatchEvent(new Event("change", { bubbles: true }));
+            restoring = false;
+        }
+    });
+
+    select.addEventListener("change", () => {
+        if (restoring) return; // don't re-save our own restore
+        const option = select.options[select.selectedIndex];
+        if (!option) return;
+        chrome.storage.sync.set({
+            [PREFERRED_LANGUAGE_KEY]: {
+                value: option.value,
+                text: option.text.trim(),
+            },
+        });
+    });
 }
 
 // Load settings from chrome.storage
