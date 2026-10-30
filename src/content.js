@@ -63,19 +63,19 @@ function init() {
 // the value is only a fallback.
 const PREFERRED_LANGUAGE_KEY = "preferredLanguage";
 
+// Problem pages also have a translation dropdown (`#choose-language`, named
+// "lang") whose change handler navigates to the translated page, so the
+// submission dropdown is identified by its options, never by its name.
 function findLanguageSelect() {
-    const selects = Array.from(document.querySelectorAll("select"));
-    const byName = selects.find((s) =>
-        `${s.name} ${s.id}`.toLowerCase().includes("lang")
+    const selects = Array.from(document.querySelectorAll("select")).filter(
+        (s) => s.id !== "choose-language"
     );
-    if (byName) return byName;
-    // Fallback: the dropdown whose options look like programming languages
     return (
         selects.find((s) => {
             const texts = Array.from(s.options, (o) => o.text.toLowerCase());
             return (
                 texts.some((t) => t.includes("python")) &&
-                texts.some((t) => t.includes("java"))
+                texts.some((t) => t.includes("java") || t.includes("c++"))
             );
         }) || null
     );

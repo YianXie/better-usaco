@@ -38,7 +38,7 @@ Two independent scripts talk over `chrome.runtime` messaging; there is **no back
 
 ### Notable behaviors
 
-- **Submission language memory** (`setupLanguageMemory` in `content.js`): finds the submit form's language `<select>` (by `name`/`id` containing "lang", else by options mentioning Python and Java), restores `chrome.storage.sync.preferredLanguage` on load (matching option text first, value second), and saves on user change. It is not a popup setting, so it is not in the duplicated settings keys above.
+- **Submission language memory** (`setupLanguageMemory` in `content.js`): finds the submit form's language `<select>` by its options (Python plus Java or C++), skipping the translation dropdown `#choose-language`, which is also named "lang" and navigates on change, restores `chrome.storage.sync.preferredLanguage` on load (matching option text first, value second), and saves on user change. It is not a popup setting, so it is not in the duplicated settings keys above.
 
 - `styleElement` is created and removed by `applyStyles`/`removeStyles` but nothing ever writes rules into it — the actual theme is the manifest-injected `styles.css`. Disabling the extension works by removing the `.usaco-dark-mode` class and the inline filter.
 - A `MutationObserver` on the whole document watches for `location.href` changes and re-applies styles / recreates the toggle button after 100 ms.
