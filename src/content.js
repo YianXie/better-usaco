@@ -81,14 +81,24 @@ function findLanguageSelect() {
     );
 }
 
+// The popup can't see the submit form, so the options are recorded here for
+// its "Submission Language" dropdown to offer.
+const LANGUAGE_OPTIONS_KEY = "submissionLanguages";
+
 function setupLanguageMemory() {
     const select = findLanguageSelect();
     if (!select || select.dataset.busacoLangMemory) return;
     select.dataset.busacoLangMemory = "true";
     let restoring = false;
 
-    chrome.storage.sync.get(PREFERRED_LANGUAGE_KEY, (data) => {
-        const saved = data[PREFERRED_LANGUAGE_KEY];
+    chrome.storage.local.set({
+        [LANGUAGE_OPTIONS_KEY]: Array.from(select.options, (o) => ({
+            value: o.value,
+            text: o.text.trim(),
+        })),
+    });
+
+    function restore(saved) {
         if (!saved || !settings.enabled) return;
         const options = Array.from(select.options);
         const match =
@@ -100,6 +110,17 @@ function setupLanguageMemory() {
             restoring = true;
             select.dispatchEvent(new Event("change", { bubbles: true }));
             restoring = false;
+        }
+    }
+
+    chrome.storage.sync.get(PREFERRED_LANGUAGE_KEY, (data) =>
+        restore(data[PREFERRED_LANGUAGE_KEY])
+    );
+
+    // A choice made in the popup applies to an open problem page immediately
+    chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === "sync" && changes[PREFERRED_LANGUAGE_KEY]) {
+            restore(changes[PREFERRED_LANGUAGE_KEY].newValue);
         }
     });
 

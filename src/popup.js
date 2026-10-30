@@ -86,6 +86,46 @@ function saveSettings() {
     });
 }
 
+// Submission language: stored as {value, text} under "preferredLanguage",
+// separately from the settings above. The option list comes from the last
+// submit form the content script saw ("submissionLanguages" in local storage).
+const languageSelect = document.getElementById("preferredLanguage");
+const languageNote = document.getElementById("preferredLanguageNote");
+
+function loadLanguageSetting() {
+    chrome.storage.local.get("submissionLanguages", (local) => {
+        chrome.storage.sync.get("preferredLanguage", (sync) => {
+            const options = local.submissionLanguages || [];
+            const saved = sync.preferredLanguage;
+            for (const { value, text } of options) {
+                languageSelect.add(new Option(text, value));
+            }
+            // Keep a saved choice selectable even before the list is loaded
+            if (saved && !options.some((o) => o.text === saved.text)) {
+                languageSelect.add(new Option(saved.text, saved.value));
+            }
+            if (saved) {
+                const match = Array.from(languageSelect.options).find(
+                    (o) => o.text === saved.text
+                );
+                if (match) match.selected = true;
+            }
+            languageNote.hidden = options.length > 0;
+        });
+    });
+}
+
+languageSelect.addEventListener("change", () => {
+    const option = languageSelect.options[languageSelect.selectedIndex];
+    if (!option.value) {
+        chrome.storage.sync.remove("preferredLanguage");
+    } else {
+        chrome.storage.sync.set({
+            preferredLanguage: { value: option.value, text: option.text },
+        });
+    }
+});
+
 // Event listeners
 elements.enabled.addEventListener("change", saveSettings);
 elements.darkMode.addEventListener("change", saveSettings);
@@ -111,4 +151,5 @@ elements.invert.addEventListener("input", () => {
 // Initialize on load
 document.addEventListener("DOMContentLoaded", () => {
     loadSettings();
+    loadLanguageSetting();
 });
