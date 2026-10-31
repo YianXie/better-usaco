@@ -53,6 +53,88 @@ function init() {
     loadSettings();
     createToggleButton();
     applyStyles();
+    setupLanguageMemory();
+}
+
+// --- Remember the submission language ---------------------------------------
+// USACO's submit form resets its language dropdown on every page load. We save
+// whatever the user picks and restore it next time. The option's visible text
+// is matched first because it is more stable than USACO's numeric values;
+// the value is only a fallback.
+const PREFERRED_LANGUAGE_KEY = "preferredLanguage";
+
+// Problem pages also have a translation dropdown (`#choose-language`, named
+// "lang") whose change handler navigates to the translated page, so the
+// submission dropdown is identified by its options, never by its name.
+function findLanguageSelect() {
+    const selects = Array.from(document.querySelectorAll("select")).filter(
+        (s) => s.id !== "choose-language"
+    );
+    return (
+        selects.find((s) => {
+            const texts = Array.from(s.options, (o) => o.text.toLowerCase());
+            return (
+                texts.some((t) => t.includes("python")) &&
+                texts.some((t) => t.includes("java") || t.includes("c++"))
+            );
+        }) || null
+    );
+}
+
+// The popup can't see the submit form, so the options are recorded here for
+// its "Submission Language" dropdown to offer.
+const LANGUAGE_OPTIONS_KEY = "submissionLanguages";
+
+function setupLanguageMemory() {
+    const select = findLanguageSelect();
+    if (!select || select.dataset.busacoLangMemory) return;
+    select.dataset.busacoLangMemory = "true";
+    let restoring = false;
+
+    chrome.storage.local.set({
+        [LANGUAGE_OPTIONS_KEY]: Array.from(select.options, (o) => ({
+            value: o.value,
+            text: o.text.trim(),
+        })),
+    });
+
+    function restore(saved) {
+        if (!saved || !settings.enabled) return;
+        const options = Array.from(select.options);
+        const match =
+            options.find((o) => o.text.trim() === saved.text) ||
+            options.find((o) => o.value === saved.value);
+        if (match && select.value !== match.value) {
+            select.value = match.value;
+            // Let the page react as if the user picked it
+            restoring = true;
+            select.dispatchEvent(new Event("change", { bubbles: true }));
+            restoring = false;
+        }
+    }
+
+    chrome.storage.sync.get(PREFERRED_LANGUAGE_KEY, (data) =>
+        restore(data[PREFERRED_LANGUAGE_KEY])
+    );
+
+    // A choice made in the popup applies to an open problem page immediately
+    chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === "sync" && changes[PREFERRED_LANGUAGE_KEY]) {
+            restore(changes[PREFERRED_LANGUAGE_KEY].newValue);
+        }
+    });
+
+    select.addEventListener("change", () => {
+        if (restoring) return; // don't re-save our own restore
+        const option = select.options[select.selectedIndex];
+        if (!option) return;
+        chrome.storage.sync.set({
+            [PREFERRED_LANGUAGE_KEY]: {
+                value: option.value,
+                text: option.text.trim(),
+            },
+        });
+    });
 }
 
 // Load settings from chrome.storage
